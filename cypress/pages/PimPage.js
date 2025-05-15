@@ -1,0 +1,61 @@
+// cypress/pages/PimPage.js
+
+class PimPage {
+  elements = {
+    firstName: () => cy.get('input[name="firstName"]'),
+    middleName: () => cy.get('input[name="middleName"]'),
+    lastName: () => cy.get('input[name="lastName"]'),
+    employeeIdInput: () =>
+      cy.contains('label', 'Employee Id')
+        .parent()
+        .siblings('div')
+        .find('input'),
+    submitButton: () => cy.get('button[type="submit"]'),
+    addButton: () => cy.get('button.oxd-button--secondary').eq(1),
+    successMessage: () => cy.contains('Successfully Saved'),
+    credentialError: () => cy.contains('Credential Required'),
+    lastNameError: () =>
+      cy.get('input[name="lastName"]')
+        .parent()
+        .siblings('span.oxd-input-field-error-message'),
+    firstNameError: () =>
+      cy.get('input[name="firstName"]')
+        .parent()
+        .siblings('span.oxd-input-field-error-message'),
+    duplicateIdError: () => cy.contains('Employee Id already exists'),
+    editButton: () => cy.get('button[class="oxd-icon-button oxd-table-cell-action-space"]').eq(0),
+    editFirstNameInput: () => cy.get('input[name="firstName"]'),
+    editSubmitButton: () => cy.get('button[type="submit"]').eq(1)
+  };
+
+  fillEmployeeForm({ firstName, middleName, lastName, employeeId }) {
+    if (firstName) this.elements.firstName().type(firstName);
+    if (middleName) this.elements.middleName().type(middleName);
+    if (lastName) this.elements.lastName().type(lastName);
+    if (employeeId) this.elements.employeeIdInput().clear().type(employeeId.toString());
+  }
+
+  submitForm() {
+    this.elements.submitButton().click();
+  }
+
+  openAddEmployee() {
+    cy.visit('/pim/addEmployee', { failOnStatusCode: false });
+  }
+
+  openEmployeeList() {
+    cy.visit('/pim/viewEmployeeList');
+  }
+
+  clickAddButton() {
+    this.elements.addButton().click();
+  }
+
+  editFirstEmployee(newFirstName) {
+    this.elements.editButton().click();
+    this.elements.editFirstNameInput().type(newFirstName);
+    this.elements.editSubmitButton().click();
+  }
+}
+
+export default PimPage;

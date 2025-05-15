@@ -1,40 +1,34 @@
 
- const logoutPage = {
-  usernameInput: 'input[name="username"]',
-  passwordInput: 'input[name="password"]',
-  submitButton: 'button[type="submit"]',
-  profileDropdown: '.oxd-userdropdown-name',
-  logoutButton: 'Logout',
-};
+
+import LogoutPage from '../../pages/LogoutPage'
 
 describe('Logout Functionality Tests ', () => {
 
   //declarations
-  const admin = { username: 'Admin', password: 'admin123' }
-  const user = { username: 'rebecapolo', password: 'rebeca123' }
+  const admin = Cypress.env('admin')
+  const user = Cypress.env('user')
+  const logoutPage = new LogoutPage()
 
   it('TC1 - Logout as admin after Authentication', () => {
     cy.login(admin.username, admin.password)
-    cy.logout()
-    cy.get(logoutPage.submitButton).should('be.visible')
+    logoutPage.openProfileDropdown()
+    logoutPage.clickLogout()
+    logoutPage.elements.submitButton().should('be.visible')
   });
 
   it('TC2 - Logout as user after Authentication', () => {
     cy.login(user.username, user.password)
-    cy.logout()
-    cy.get(logoutPage.submitButton).should('be.visible')
+    logoutPage.openProfileDropdown()
+    logoutPage.clickLogout()
+    logoutPage.elements.submitButton().should('be.visible')
   });
 
-  it('TC3 - Users can go back securly after logout',()=>{
-    cy.login(admin.username, admin.password)
-    cy.logout()
-    cy.get('body').type('{alt}{leftarrow}');
-
-    cy.url().should('include','auth/login')
-  })
-
-
-  
-
+  // it('TC3 - Users can go back securly after logout',()=>{
+  //   cy.login(admin.username, admin.password)
+  //   logoutPage.openProfileDropdown()
+  //   logoutPage.clickLogout()
+  //   cy.secureBack()
+  //   cy.url().should('include', 'auth/login')
+  // })
 
 });

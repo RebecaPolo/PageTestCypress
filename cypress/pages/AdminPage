@@ -1,0 +1,58 @@
+class AdminPage {
+  elements = {
+    editButton: () => cy.get('button[type="button"]').eq(8),
+    deleteButton: () => cy.get('button[type="button"]').eq(9),
+    addUserRoleDropdown: () => cy.get('.oxd-select-text').eq(0),
+    userRoleOptions: () => cy.get('.oxd-select-dropdown'),
+    addUserName: () => cy.get('.oxd-autocomplete-text-input--active input'),
+    addUserStatusDropdown: () => cy.get('.oxd-select-text').eq(1),
+    addUserUsername: () => cy.get('.oxd-autocomplete-dropdown'),
+    addUserPassword: () => cy.get('.oxd-input--active').eq(1),
+    addUserConfirmPass: () => cy.get('.oxd-input--active').eq(2),
+    addUserCancelButton: () => cy.get('.oxd-button--ghost'),
+    addUserSaveButton: () => cy.get('.orangehrm-left-space')
+  };
+
+  clickEditButton() {
+    this.elements.editButton().click();
+  }
+
+  clickDeleteButton() {
+    this.elements.deleteButton().click();
+  }
+
+  selectAddUserRole(role) {
+    this.elements.addUserRoleDropdown().click();
+    this.elements.userRoleOptions().contains(role).click();
+  }
+
+  editAddUserName(name) {
+    this.elements.addUserName().clear().type(name);               // completează numele
+  }
+  selectAddUserStatus(status) {
+    this.elements.addUserStatusDropdown().click();
+    cy.get('.oxd-select-dropdown').contains(status).click();
+  }
+
+  editAddUserUsername(username) {
+    this.elements.addUserUsername().countains(username).click();
+  }
+
+  editAddUserPassword(password) {
+    this.elements.addUserPassword().type(password);
+  }
+
+  editAddUserConfirmPass(password) {
+    this.elements.addUserConfirmPass().type(password);
+  }
+
+  clickAddUserCancelButton() {
+    this.elements.addUserCancelButton().click();
+  }
+
+  clickAddUserSaveButton() {
+    this.elements.addUserSaveButton().click();
+  }
+}
+
+export default AdminPage;

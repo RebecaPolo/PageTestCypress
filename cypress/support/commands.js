@@ -24,22 +24,6 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('openNewTab', (url) => {
-  cy.window().then((win) => {
-    // Deschide URL-ul într-un nou tab
-    const newTab = win.open(url, '_blank');
-    
-    // Verifică dacă tab-ul a fost deschis
-    cy.wrap(newTab).should('exist');
-
-    // Așteaptă ca documentul tab-ului să fie complet încărcat
-    cy.wrap(newTab.document).should('have.property', 'readyState', 'complete');
-
-    // Verifică dacă URL-ul tab-ului deschis este corect
-    cy.wrap(newTab.location.href).should('include', url);
-  });
-});
-
 Cypress.Commands.add('login', (username, password) => {
   cy.visit('/auth/login');
   cy.get('input[name="username"]').type(username);

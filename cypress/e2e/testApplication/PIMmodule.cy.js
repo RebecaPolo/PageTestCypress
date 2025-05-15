@@ -1,119 +1,95 @@
+// cypress/e2e/testApplication/pim.cy.js
+import PimPage from '../../pages/PimPage';
 
-describe('Testing PIM module components',()=>{
+describe('Testing PIM module components', () => {
+  const admin = Cypress.env('admin');
+  const user = Cypress.env('user');
+
+  const pim = new PimPage();
+  let shouldRunAfterEach = true;
+
+  beforeEach(() => {
+    cy.login(admin.username, admin.password);
+    pim.openAddEmployee();
+  });
+
+  afterEach(() => {
+    if (!shouldRunAfterEach) return;
+    cy.logout();
+  });
+
+  it('TC1 - Add button works correctly', () => {
+    pim.openEmployeeList();
+    pim.clickAddButton();
+  });
+
+  it('TC2 - Add an employee with all fields filled correctly', () => {
+    const id = Math.floor(1000 + Math.random() * 9000);
+    pim.fillEmployeeForm({
+      firstName: 'Rebeca',
+      middleName: 'Mihaela',
+      lastName: 'Polo',
+      employeeId: id
+    });
+    pim.submitForm();
+    pim.elements.successMessage().should('be.visible');
+  });
+
+  it('TC3 - Validation for Last Name when adding a new user', () => {
+    const id = Math.floor(1000 + Math.random() * 9000);
+    pim.fillEmployeeForm({
+      firstName: 'Rebeca',
+      middleName: 'Test1',
+      employeeId: id
+    });
+    pim.submitForm();
+    pim.elements.lastNameError().should('contain.text', 'Required');
+  });
+
+  it('TC4 - Validation for First Name when adding a new user', () => {
+    const id = Math.floor(1000 + Math.random() * 9000);
+    pim.fillEmployeeForm({
+      middleName: 'Test1',
+      lastName: 'Test',
+      employeeId: id
+    });
+    pim.submitForm();
+    pim.elements.firstNameError().should('contain.text', 'Required');
+  });
+
+  it('TC5 - Normal user validation to add a user', () => {
+    shouldRunAfterEach = false;
+
+    cy.logout();
+    cy.visit('/auth/login');
+    cy.get('input[name="username"]').type(user.username);
+    cy.get('input[name="password"]').type(user.password);
+    cy.get('button[type="submit"]').click();
+    cy.visit('/pim/addEmployee', { failOnStatusCode: false });
+    pim.elements.credentialError().should('be.visible');
     
-    var adminUsername = 'Admin'
-    var adminPassword = 'admin123'
-    let shouldRunAfterEach = true;
+    //SAU
+    // shouldRunAfterEach = false;
+    // cy.logout();
+    // cy.login(user.username, user.password);
+    // pim.openAddEmployee();
+    // pim.elements.credentialError().should('be.visible');
+  });
 
-    beforeEach(()=>{
-        cy.login(adminUsername, adminPassword)
-        cy.visit('/pim/addEmployee')
+  it('TC6 - Validation for Employee Id when adding a new user', () => {
+    pim.fillEmployeeForm({
+      firstName: 'Rebeca',
+      middleName: 'Test1',
+      lastName: 'Test',
+      employeeId: '0417'
+    });
+    pim.submitForm();
+    pim.elements.duplicateIdError().should('be.visible');
+  });
 
-    })
-
-    afterEach(()=>{
-        if (!shouldRunAfterEach) return;
-        cy.logout()
-    })
-
-    //ADD 
-    it('TC1 - Add button works correctly',()=>{
-        cy.visit('/pim/viewEmployeeList')
-        cy.get('button.oxd-button--secondary').eq(1).click()
-        
-    })
-
-    
-    it('TC2 - Add an employee with all fields filled correctly',()=>{
-        const randomId = Math.floor(1000 + Math.random() * 9000);
-
-        cy.get('input[name="firstName"]').type('rebeca')
-        cy.get('input[name="middleName"]').type('mihaela')
-        cy.get('input[name="lastName"]').type('Polo')
-        cy.contains('label', 'Employee Id') // găsește label-ul
-            .parent()                         
-            .siblings('div')                 
-            .find('input')                   
-            .type(randomId.toString())
-
-        cy.get('button[type="submit"]').click()
-
-        cy.contains('Successfully Saved').should('be.visible')
-    })
-
-    it('TC3 - Validation for Last Name when adding a new user',()=>{
-        const randomId = Math.floor(1000 + Math.random() * 9000);
-
-        cy.get('input[name="firstName"]').type('rebeca')
-        cy.get('input[name="middleName"]').type('test1')
-        cy.contains('label', 'Employee Id') // găsește label-ul
-            .parent()                         
-            .siblings('div')                 
-            .find('input')                   
-            .type(randomId.toString())
-
-        cy.get('button[type="submit"]').click()
-
-        cy.get('input[name="lastName"]')
-            .parent() 
-            .siblings('span.oxd-input-field-error-message') // selectăm mesajul de eroare
-            .should('contain.text', 'Required');
-    })
-
-    it('TC4 - Validation for First Name when adding a new user',()=>{
-        const randomId = Math.floor(1000 + Math.random() * 9000);
-
-        cy.get('input[name="middleName"]').type('test1')
-        cy.get('input[name="lastName"]').type('test')
-        cy.contains('label', 'Employee Id') // găsește label-ul
-            .parent()                         
-            .siblings('div')                 
-            .find('input')                   
-            .type(randomId.toString())
-
-        cy.get('button[type="submit"]').click()
-
-        cy.get('input[name="firstName"]')
-            .parent() 
-            .siblings('span.oxd-input-field-error-message') // selectăm mesajul de eroare
-            .should('contain.text', 'Required');
-    })
-
-    it('TC5 - Normal user validation to add a user',()=>{
-        shouldRunAfterEach = false;
-
-        cy.logout()
-        cy.login('rebecapolo','rebeca123')
-        cy.visit('/pim/addEmployee',{ failOnStatusCode: false })
-        cy.contains('Credential Required').should('be.visible')
-    })
-
-
-    it('TC6 - Validation for Emplyee Id when adding a new user',()=>{
-        shouldRunAfterEach = true;
-        cy.get('input[name="firstName"]').type('rebeca')
-        cy.get('input[name="middleName"]').type('test1')
-        cy.get('input[name="lastName"]').type('test')
-        cy.contains('label', 'Employee Id') // găsește label-ul
-            .parent()                         
-            .siblings('div')                 
-            .find('input')
-            .clear()                   
-            .type('0417')
-
-        cy.get('button[type="submit"]').click()
-
-        cy.contains('Employee Id already exists').should('be.visible')
-    })
-
-    // EDIT 
-    it('TC7 - Edit a emplyee from the List',()=>{
-
-        cy.visit('/pim/viewEmployeeList')
-        cy.get('button[class="oxd-icon-button oxd-table-cell-action-space"]').eq(0).click()
-        cy.get('input[name="firstName"]').type('Test')
-        cy.get('button[type="submit"]').eq(1).click()
-        cy.contains('Successfully Saved').should('be.visible')
-    })
-    
-})
+  it('TC7 - Edit an employee from the List', () => {
+    pim.openEmployeeList();
+    pim.editFirstEmployee('Test');
+    pim.elements.successMessage().should('be.visible');
+  });
+});
