@@ -1,84 +1,92 @@
-
-
-var adminUsername = 'Admin'
-var adminPassword = 'admin123'
-var invalidUsername = 'adm'
-var invalidPassword = 'adm1234'
+const loginPage = {
+  usernameInput: 'input[name="username"]',
+  passwordInput: 'input[name="password"]',
+  submitButton: 'button[type="submit"]',
+  inputGroup: '.oxd-input-group',
+  errorMessage: '.oxd-input-field-error-message',
+  invalidCredentialsText: 'Invalid credentials'
+};
 
 describe('Login Page Test Scenarios', () => {
 
-    beforeEach(() => {
-    // Deschide pagina de login
-    cy.visit('/auth/login');
+  //declarations
+  const admin = { username: 'Admin', password: 'admin123' }
+  const user = { username: 'rebecapolo', password: 'rebeca123' }
+  const invalid = { username: 'adm', password: 'adm1234' }
+
+  const performLogin = (usernameOrObj, password) => {
+    const username = typeof usernameOrObj === 'object' ? usernameOrObj.username : usernameOrObj
+    password = typeof usernameOrObj === 'object' ? usernameOrObj.password : password
+
+    if (username) cy.get(loginPage.usernameInput).type(username)
+    if (password) cy.get(loginPage.passwordInput).type(password)
+
+    cy.get(loginPage.submitButton).click();
+  };
+
+  const expectRequiredError = (fieldIndex) => {
+    cy.get(loginPage.inputGroup).eq(fieldIndex)
+      .find(loginPage.errorMessage)
+      .should('contain.text', 'Required')
+  };
+
+  //Hooks
+  beforeEach(() => {
+    cy.visit('/auth/login')
   });
 
-  
-  it('TC1 - Valid Login', () => {
-    //user and pass input
-    cy.get('input[name="username"]').type(adminUsername);
-    cy.get('input[name="password"]').type(adminPassword);
+  //contexts
+  context('Valid login scenarios', () => {
+    afterEach(() => {
+      cy.logout()
+    })
 
-    // Click on login button
-    cy.get('button[type="submit"]').click();
+    it('TC1 - Login as admin', () => {
+      performLogin(admin)
+      cy.url().should('include', '/dashboard')
+      cy.contains('Dashboard').should('be.visible')
+    })
 
-    // Verify if this is the correct page
-    cy.url().should('include', '/dashboard');
-    cy.contains('Dashboard').should('be.visible');
-  });
-
-  it('TC2 - Valid username and invalid password', () => {
-    cy.get('input[name="username"]').type(adminUsername);
-    cy.get('input[name="password"]').type(invalidPassword);
-    cy.get('button[type="submit"]').click();
-
-    // Verifică afișarea mesajului de eroare
-    // cy.get('.oxd-alert-content-text')
-    //   .should('be.visible')
-    //   .and('contain', 'Invalid credentials');
-    cy.contains('Invalid credentials').should('be.visible')
-  });
-
-  it('TC3 - Invalid username and valid password', ()=>{
-    cy.get('input[name="username"]').type(invalidUsername)
-    cy.get('input[name="password"]').type(adminPassword)
-    cy.get('button[type="submit"]').click()
-
-    cy.contains('Invalid credentials').should('be.visible')
+    it('TC2 - Login as user', () => {
+      performLogin(user)
+      cy.url().should('include', '/dashboard')
+      cy.contains('Dashboard').should('be.visible')
+    })
   })
 
-  it('TC4 - Invalid username and password', ()=>{
-    cy.get('input[name="username"]').type(invalidUsername)
-    cy.get('input[name="password"]').type(invalidPassword)
-    cy.get('button[type="submit"]').click()
+  context('Negative log scenarios', () => {
+    it('TC3 - Valid username, invalid password', () => {
+      performLogin(admin.username, invalid.password)
+      cy.contains(loginPage.invalidCredentialsText).should('be.visible')
+    })
 
-    cy.contains('Invalid credentials').should('be.visible')
+    it('TC4 - Invalid username and valid password', () => {
+      performLogin(invalid.username, admin.password)
+      cy.contains(loginPage.invalidCredentialsText).should('be.visible')
+    })
+
+    it('TC5 - Invalid username and password', () => {
+      performLogin(invalid)
+      cy.contains(loginPage.invalidCredentialsText).should('be.visible')
+    })
+
+    it('TC6 - Username and password cleared', () => {
+      cy.get(loginPage.submitButton).click()
+      expectRequiredError(0) // Username
+      expectRequiredError(1) // Password
+    });
+
+    it('TC7 - Username cleared and password filled', () => {
+      cy.get(loginPage.usernameInput).type(user.username)
+      cy.get(loginPage.submitButton).click()
+      expectRequiredError(1) // Password
+    })
+
+    it('TC8 - Password cleared and username filled', () => {
+      cy.get(loginPage.passwordInput).type(user.password)
+      cy.get(loginPage.submitButton).click();
+      expectRequiredError(0) // Username
+    })
   })
 
-  it('TC5 - Username and password cleared', ()=>{
-    cy.get('button[type="submit"]').click()
-
-    cy.get('input[name="username"]').parents('.oxd-input-group')
-    .find('.oxd-input-field-error-message').should('contain.text','Required')
-    
-    cy.get('.oxd-input-group').eq(1)
-    .find('.oxd-input-field-error-message').should('contain.text','Required')
-  })
-
-  it('TC6 - Username cleared and password filled', ()=>{
-    cy.get('input[name="username"]').type(adminUsername)
-    cy.get('button[type="submit"]').click()
-
-    cy.get('.oxd-input-group').eq(1)
-    .find('.oxd-input-field-error-message').should('contain.text','Required')
-  })
-
-  it('TC7 - Password cleared and username filled', ()=>{
-    cy.get('input[name="password"]').type(adminPassword)
-    cy.get('button[type="submit"]').click()
-
-    cy.get('.oxd-input-group').eq(0)
-    .find('.oxd-input-field-error-message').should('contain.text','Required')
-  })
-
-
-});
+})
