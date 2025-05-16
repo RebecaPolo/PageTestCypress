@@ -1,19 +1,21 @@
 // cypress/pages/PimPage.js
 
+import messages from "./messages";
+import routes from "./routes";
+
 class PimPage {
+    //selectori
   elements = {
     firstName: () => cy.get('input[name="firstName"]'),
     middleName: () => cy.get('input[name="middleName"]'),
     lastName: () => cy.get('input[name="lastName"]'),
     employeeIdInput: () =>
-      cy.contains('label', 'Employee Id')
+      cy.contains('label', messages.employeeId)
         .parent()
         .siblings('div')
         .find('input'),
     submitButton: () => cy.get('button[type="submit"]'),
     addButton: () => cy.get('button.oxd-button--secondary').eq(1),
-    successMessage: () => cy.contains('Successfully Saved'),
-    credentialError: () => cy.contains('Credential Required'),
     lastNameError: () =>
       cy.get('input[name="lastName"]')
         .parent()
@@ -22,12 +24,17 @@ class PimPage {
       cy.get('input[name="firstName"]')
         .parent()
         .siblings('span.oxd-input-field-error-message'),
-    duplicateIdError: () => cy.contains('Employee Id already exists'),
     editButton: () => cy.get('button[class="oxd-icon-button oxd-table-cell-action-space"]').eq(0),
     editFirstNameInput: () => cy.get('input[name="firstName"]'),
-    editSubmitButton: () => cy.get('button[type="submit"]').eq(1)
+    editSubmitButton: () => cy.get('button[type="submit"]').eq(1),
+
+    //messages
+    successMessage: () => cy.contains(messages.succesfullySaved),
+    credentialError: () => cy.contains(messages.credentialRequired),
+    duplicateIdError: () => cy.contains(messages.duplicateIdError),
   };
 
+  //metode
   fillEmployeeForm({ firstName, middleName, lastName, employeeId }) {
     if (firstName) this.elements.firstName().type(firstName);
     if (middleName) this.elements.middleName().type(middleName);
@@ -40,11 +47,11 @@ class PimPage {
   }
 
   openAddEmployee() {
-    cy.visit('/pim/addEmployee', { failOnStatusCode: false });
+    cy.visit(routes.pimAddEmployee, { failOnStatusCode: false });
   }
 
   openEmployeeList() {
-    cy.visit('/pim/viewEmployeeList');
+    cy.visit(routes.pimViewList);
   }
 
   clickAddButton() {

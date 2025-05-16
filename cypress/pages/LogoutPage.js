@@ -1,12 +1,16 @@
+import messages from "./messages";
+
 class LogoutPage {
+    //selectori
   elements = {
     usernameInput: () => cy.get('input[name="username"]'),
     passwordInput: () => cy.get('input[name="password"]'),
     submitButton: () => cy.get('button[type="submit"]'),
     profileDropdown: () => cy.get('.oxd-userdropdown-name'),
-    logoutButton: () => cy.contains('Logout'),
+    logoutButton: () => cy.contains(messages.logout),
   }
 
+  //metode
   typeUsername(username) {
     this.elements.usernameInput().type(username);
   }

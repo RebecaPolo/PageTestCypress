@@ -1,17 +1,22 @@
 // cypress/pages/LoginPage.js
 
+import messages from "./messages";
+import routes from "./routes";
+
 class LoginPage {
+    //selectori
   elements = {
     usernameInput: () => cy.get('input[name="username"]'),
     passwordInput: () => cy.get('input[name="password"]'),
     submitButton: () => cy.get('button[type="submit"]'),
     inputGroup: () => cy.get('.oxd-input-group'),
     errorMessage: () => cy.get('.oxd-input-field-error-message'),
-    invalidCredentialsText: () => cy.contains('Invalid credentials')
+    invalidCredentials: () => cy.contains(messages.invalidCredentials)
   }
 
+  //metode
   visit() {
-    cy.visit('/auth/login');
+    cy.visit(routes.login);
   }
 
   typeUsername(username) {
@@ -36,11 +41,11 @@ class LoginPage {
     this.elements.inputGroup()
       .eq(index)
       .find('.oxd-input-field-error-message')
-      .should('contain.text', 'Required');
+      .should('contain.text', messages.required);
   }
 
   expectInvalidCredentials() {
-    this.elements.invalidCredentialsText().should('be.visible');
+    this.elements.invalidCredentials().should('be.visible');
   }
 }
 

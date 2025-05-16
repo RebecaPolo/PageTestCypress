@@ -1,0 +1,73 @@
+{
+  "_comment": "Date pentru testarea formularului Add User în Admin Page",
+
+  "validUser": {
+    "role": "ESS",
+    "name": "re",
+    "status": "Enabled",
+    "username": "rebecapolo1",
+    "password": "rebeca123",
+    "confirmPassword": "rebeca123"
+  },
+
+  "missingUsername": {
+    "role": "ESS",
+    "name": "re",
+    "status": "Enabled",
+    "username": "",
+    "password": "rebeca123",
+    "confirmPassword": "rebeca123"
+  },
+
+  "missingPassword": {
+    "role": "ESS",
+    "name": "re",
+    "status": "Enabled",
+    "username": "rebecapolo2",
+    "password": "",
+    "confirmPassword": "rebeca123"
+  },
+
+  "missingRole": {
+    "role": "",
+    "name": "re",
+    "status": "Enabled",
+    "username": "rebecapolo3",
+    "password": "rebeca123",
+    "confirmPassword": "rebeca123"
+  },
+
+  "missingStatus": {
+    "role": "ESS",
+    "name": "re",
+    "status": "",
+    "username": "rebecapolo4",
+    "password": "rebeca123",
+    "confirmPassword": "rebeca123"
+  },
+
+  "invalidShortPassword": {
+    "role": "ESS",
+    "name": "e",
+    "status": "Enabled",
+    "username": "rebecapolo5",
+    "password": "123",
+    "confirmPassword": "123"
+  },
+
+  "duplicateUsername": {
+    "role": "ESS",
+    "name": "s",
+    "status": "Disabled",
+    "username": "admin", 
+    "password": "admin123"
+  },
+  "passwordMismatch": {
+    "role": "ESS",
+    "name": "s",
+    "status": "Disabled",
+    "username": "admin", 
+    "password": "admin123",
+    "confirmPassword": "adm1"
+  }
+}

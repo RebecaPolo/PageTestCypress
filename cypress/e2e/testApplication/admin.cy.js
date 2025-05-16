@@ -1,31 +1,73 @@
+import AdminPage from "../../pages/AdminPage";
+import routes from "../../pages/routes";
 
-import AdminPage from "../../pages/AdminPage"
+const admin = Cypress.env('admin');
+const adminPage = new AdminPage();
 
-describe('Admin page testing',()=>{
+describe('Admin page testing', () => {
 
-    const admin = Cypress.env('admin')
-    const adminPage = new AdminPage()
+  context('Static form validation tests (no fixtures)', () => {
+    beforeEach(() => {
+      cy.login(admin.username, admin.password);
+      cy.visit(routes.adminAddUser);
+    });
 
-    beforeEach(()=>{
-        cy.login(admin.username, admin.password)
-        
-    })
+    afterEach(() => {
+      cy.logout();
+    });
 
-    afterEach(()=>{
-        cy.logout()
-    })
-    
+    it('TC1 - Show all required field errors when form is empty', () => {
+      adminPage.clickAddUserSaveButton();
+      adminPage.verifyAllErrors();
+    });
+  });
 
-    it('TC1 - All fields completed and new user added',()=>{
-        cy.visit('/admin/saveSystemUser')
-        adminPage.selectAddUserRole('ESS')
-        adminPage.editAddUserName('tester')
-        adminPage.selectAddUserStatus('Enabled')
-        adminPage.editAddUserUsername('rebecapolocoser')
-        adminPage.editAddUserPassword('rebeca123')
-        adminPage.editAddUserConfirmPass('rebeca123')
-        adminPage.clickAddUserSaveButton()
+  context('Form validation and user creation using fixtures', () => {
+    beforeEach(() => {
+      cy.login(admin.username, admin.password);
+      cy.visit(routes.adminAddUser);
+      cy.fixture('addUserData').as('userData');
+    });
 
-    })
+    afterEach(() => {
+      cy.logout();
+    });
 
-})
+    it('TC2 - All fields completed and new user added', function () {
+      adminPage.fillAddUserForm(this.userData.validUser);
+      adminPage.clickAddUserSaveButton();
+      adminPage.expectSuccessfulySavedMessage();
+    });
+
+    it('TC3 - Missing username should trigger validation', function () {
+      adminPage.fillAddUserForm(this.userData.missingUsername);
+      adminPage.clickAddUserSaveButton();
+      adminPage.verifyUsernameRequiredError();
+    });
+
+    it('TC4 - Missing password should trigger validation', function () {
+      adminPage.fillAddUserForm(this.userData.missingPassword);
+      adminPage.clickAddUserSaveButton();
+      adminPage.verifyPasswordRequiredError();
+    });
+
+    it('TC5 - Short password should trigger validation', function () {
+      adminPage.fillAddUserForm(this.userData.invalidShortPassword);
+      adminPage.clickAddUserSaveButton();
+      adminPage.verifyShortPasswordError();
+    });
+
+    it('TC6 - Password mismatch should trigger error', function () {
+        adminPage.fillAddUserForm(this.userData.passwordMismatch);
+        adminPage.clickAddUserSaveButton();
+        adminPage.verifyPasswordMismatchError();
+    });
+
+    it('TC7 - Duplicate username should be handled', function () {
+      adminPage.fillAddUserForm(this.userData.duplicateUsername);
+      adminPage.clickAddUserSaveButton();
+      cy.contains('Already exists').should('be.visible');
+    });
+  });
+
+});

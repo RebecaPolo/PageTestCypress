@@ -1,5 +1,7 @@
 // cypress/e2e/testApplication/dashboard.cy.js
 import DashboardPage from '../../pages/DashboardPage'
+import messages from '../../pages/messages';
+import routes from '../../pages/routes';
 
 describe('Testing for dashboard page', () => {
   const admin = Cypress.env('admin')
@@ -31,27 +33,27 @@ describe('Testing for dashboard page', () => {
     });
 
     it('TC1 - All elements exist in dashboard page', () => {
-      dashboard.verifyMenuItemsVisible(['PIM', 'Leave', 'Time', 'Directory']);
+      dashboard.verifyMenuItemsVisible([messages.pim, messages.leave, messages.time, messages.directory]);
     });
 
     it('TC2 - Leave quick link works', () => {
-      dashboard.goToMenuItem('Leave', menuItems.admin.Leave);
-      cy.url().should('include', '/leave/viewLeaveList');
+      dashboard.goToMenuItem(messages.leave, menuItems.admin.Leave);
+      cy.url().should('include', routes.adminLeaveViewList);
     });
 
     it('TC3 - PIM quick link works', () => {
-      dashboard.goToMenuItem('PIM', menuItems.admin.PIM);
-      cy.url().should('include', '/pim/viewEmployeeList');
+      dashboard.goToMenuItem(messages.pim, menuItems.admin.PIM);
+      cy.url().should('include', routes.pimViewList);
     });
 
     it('TC4 - Time quick link works', () => {
-      dashboard.goToMenuItem('Time', menuItems.admin.Time);
-      cy.url().should('include', '/time/viewEmployeeTimesheet');
+      dashboard.goToMenuItem(messages.time, menuItems.admin.Time);
+      cy.url().should('include', routes.adminTime);
     });
 
     it('TC5 - Directory quick link works', () => {
-      dashboard.goToMenuItem('Directory', menuItems.admin.Directory);
-      cy.url().should('include', 'directory/viewDirectory');
+      dashboard.goToMenuItem(messages.directory, menuItems.admin.Directory);
+      cy.url().should('include', routes.directory);
     });
 
     it('TC6 - Welcome message appears', () => {
@@ -65,23 +67,23 @@ describe('Testing for dashboard page', () => {
     });
 
     it('TC7 - Leave quick link works', () => {
-      dashboard.goToMenuItem('Leave', menuItems.user.Leave);
-      cy.url().should('include', '/leave/');
+      dashboard.goToMenuItem(messages.leave, menuItems.user.Leave);
+      cy.url().should('include', routes.userLeaveView);
     });
 
     it('TC8 - Time quick link works', () => {
-      dashboard.goToMenuItem('Time', menuItems.user.Time);
-      cy.url().should('include', '/time/');
+      dashboard.goToMenuItem(messages.time, menuItems.user.Time);
+      cy.url().should('include', routes.userTimesheet);
     });
 
     it('TC9 - Directory quick link works', () => {
-      dashboard.goToMenuItem('Directory', menuItems.user.Directory);
-      cy.url().should('include', 'directory/viewDirectory');
+      dashboard.goToMenuItem(messages.directory, menuItems.user.Directory);
+      cy.url().should('include', routes.directory);
     });
 
     it('TC10 - Only allowed elements exist', () => {
-      dashboard.verifyMenuItemsNotVisible(['PIM']);
-      dashboard.verifyMenuItemsVisible(['Leave', 'Time', 'Directory']);
+      dashboard.verifyMenuItemsNotVisible([messages.pim]);
+      dashboard.verifyMenuItemsVisible([messages.leave, messages.time, messages.directory]);
     });
 
     it('TC11 - Welcome message appears', () => {

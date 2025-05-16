@@ -24,23 +24,26 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import messages from "../pages/messages"
+import routes from "../pages/routes"
+
 Cypress.Commands.add('login', (username, password) => {
-  cy.visit('/auth/login');
-  cy.get('input[name="username"]').type(username);
-  cy.get('input[name="password"]').type(password);
-  cy.get('button[type="submit"]').click();
+  cy.visit(routes.login);
+  cy.get('input[name="username"]').type(username)
+  cy.get('input[name="password"]').type(password)
+  cy.get('button[type="submit"]').click()
 
   // Confirmă că a ajuns pe dashboard
-  cy.url().should('include', '/dashboard');
+  cy.url().should('include', routes.dashboard)
 });
 
 Cypress.Commands.add('logout', () => {
   // Apasă pe butonul de profil pentru a deschide meniul de logout
-  cy.get('.oxd-userdropdown-name').click();
+  cy.get('.oxd-userdropdown-name',{ timeout: 10000 }).should('be.visible').click()
 
   // Apasă pe butonul Logout din dropdown
-  cy.contains('Logout').click();
+  cy.contains(messages.logout).click()
 
   // Verifică dacă utilizatorul a fost redirecționat la pagina de login
-  cy.url().should('include', '/auth/login');
+  cy.url().should('include', routes.login)
 });

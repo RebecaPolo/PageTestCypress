@@ -1,0 +1,20 @@
+
+{
+  "_comment": "Date pentru PIM page",
+
+  "validEmployee": {
+    "firstName": "Rebeca",
+    "middleName": "Mihaela",
+    "lastName": "Polo"
+  },
+  "missingLastName": {
+    "firstName": "Rebeca",
+    "middleName": "Test1"
+  },
+  "missingFirstName": {
+    "middleName": "Test1",
+    "lastName": "Test"
+  },
+  "existingId": "123457",
+  "editName": "Test"
+}

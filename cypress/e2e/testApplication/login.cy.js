@@ -1,5 +1,7 @@
 // cypress/e2e/testApplication/login.cy.js
 import LoginPage from '../../pages/LoginPage'
+import messages from '../../pages/messages';
+import routes from '../../pages/routes';
 
 describe('Login Page Test Scenarios', () => {
   const admin = Cypress.env('admin')
@@ -19,14 +21,14 @@ describe('Login Page Test Scenarios', () => {
 
     it('TC1 - Login as admin', () => {
       loginPage.submitLogin(admin);
-      cy.url().should('include', '/dashboard');
-      cy.contains('Dashboard').should('be.visible');
+      cy.url().should('include', routes.dashboard);
+      cy.contains(messages.dashboardPage).should('be.visible');
     });
 
     it('TC2 - Login as user', () => {
       loginPage.submitLogin(user);
-      cy.url().should('include', '/dashboard');
-      cy.contains('Dashboard').should('be.visible');
+      cy.url().should('include', routes.dashboard);
+      cy.contains(messages.dashboardPage).should('be.visible');
     });
   });
 
