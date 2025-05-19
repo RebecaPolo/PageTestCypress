@@ -1,7 +1,7 @@
 // cypress/e2e/testApplication/dashboard.cy.js
 import DashboardPage from '../../pages/DashboardPage'
-import messages from '../../pages/messages';
-import routes from '../../pages/routes';
+import messages from '../../pages/config/messages';
+import routes from '../../pages/config/routes';
 
 describe('Testing for dashboard page', () => {
   const admin = Cypress.env('admin')

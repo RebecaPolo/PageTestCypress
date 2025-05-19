@@ -1,12 +1,48 @@
-import messages from "./messages";
+import messages from "./config/messages";
+const TIMEOUTTIME = 5000
 
 class AdminPage {
   elements = {
     /* Elements from Admin page */
-    editButton: () => cy.get('button[type="button"]').contains('Edit'),
-    deleteButton: () => cy.get('button[type="button"]').contains('Delete'),
+    editAdminButton: () =>
+      cy.get('div[role="row"]').filter((index, row) => {
+        const cells = Cypress.$(row).find('div[role="cell"]');
+        const username = Cypress.$(cells[1]).text().trim(); // Username-ul e în a doua coloană
+        return username === 'Admin';
+      }).first().find('i.bi-pencil-fill').parents('button'),
+
+    editUserButton: () =>
+      cy.get('div[role="row"]').filter((index, row) => {
+        const username = Cypress.$(row).find('div[role="cell"]').eq(1).text().trim();
+        return username !== 'Admin' && username !== '';
+      }).first()
+        .find('button .bi-pencil-fill'),
+
+    //delete
+    deleteButtonForUser: (username) => 
+      cy.get('div[role="row"]').filter((index, row) => {
+        const cells = Cypress.$(row).find('div[role="cell"]');
+        const name = Cypress.$(cells[1]).text().trim();
+        return name === username;
+      }).first().find('i.bi-trash').parents('button'),
+
+    deleteAdminButton: () =>
+      cy.get('div[role="row"]').filter((index, row) => {
+        const cells = Cypress.$(row).find('div[role="cell"]');
+        const username = Cypress.$(cells[1]).text().trim();
+        return username === 'Admin';
+      }).first().find('i.bi-trash').parents('button'),
+
+    deleteUserButton: () =>
+      cy.get('div[role="row"]').filter((index, row) => {
+        const cells = Cypress.$(row).find('div[role="cell"]');
+        const username = Cypress.$(cells[1]).text().trim();
+        return username === 'ESS'; // sau orice altă valoare are userul normal
+      }).first().find('i.bi-trash').parents('button'),
+    
+    cancelButton: () => cy.get('button.oxd-button--ghost').contains('Cancel'),
     userRoleOptions: () => cy.get('.oxd-select-dropdown'),
-    addUserNameSelector: () => cy.get('[role="listbox"]', { timeout: 5000 }),
+    addUserNameSelector: () => cy.get('[role="listbox"]', { timeout: TIMEOUTTIME }),
 
     /* Elements from Add User */
     // Dropdown-uri (select-uri)
@@ -59,12 +95,54 @@ class AdminPage {
     this.editAddUserConfirmPass(confirmPassword);
   }
 
-  clickEditButton() {
-    this.elements.editButton().click();
+  //Edit button
+  clickEditAdminButton() {
+    this.elements.editAdminButton().click();
+  }
+  clickEditUserButton() {
+    this.elements.editUserButton().click();
   }
 
-  clickDeleteButton() {
-    this.elements.deleteButton().click();
+  //DeleteButton
+  clickDeleteAdminButton() {
+    this.elements.deleteAdminButton().click();
+  }
+  clickDeleteUserButton() {
+    this.elements.deleteUserButton().click();
+  }
+
+  clickConfirmDeleteButton() {
+    cy.get('button').contains('Yes, Delete').click();
+  }
+
+  deleteUser(){
+    this.clickDeleteUserButton()
+    this.clickConfirmDeleteButton()
+  }
+  cancelDeleteUser(){
+    this.clickDeleteUserButton()
+    this.clickCancelDeleteButton()
+  }
+  deleteAdmin(){
+    this.clickDeleteAdminButton()
+    this.getCannotDeleteMessage()
+  }
+  deleteThisUser(username){
+    this.elements.deleteButtonForUser(username).click();
+    this.clickConfirmDeleteButton();
+  }
+
+  clickCancelDeleteButton() {
+    cy.get('button').contains('No, Cancel').click();
+  }
+
+  getCannotDeleteMessage() {
+    return cy.contains(messages.cannotBeDeleted);
+  }
+
+
+  clickCancelButton(){
+    this.elements.cancelButton().click();
   }
 
   selectAddUserRole(role) {

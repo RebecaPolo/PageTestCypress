@@ -1,5 +1,5 @@
 import AdminPage from "../../pages/AdminPage";
-import routes from "../../pages/routes";
+import routes from "../../pages/config/routes";
 
 const admin = Cypress.env('admin');
 const adminPage = new AdminPage();

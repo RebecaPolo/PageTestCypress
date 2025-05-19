@@ -1,4 +1,5 @@
 
+//endpoints
 const routes = {
     //all users
     login: '/auth/login',

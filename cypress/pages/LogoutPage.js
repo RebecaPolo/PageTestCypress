@@ -1,4 +1,4 @@
-import messages from "./messages";
+import messages from "./config/messages";
 
 class LogoutPage {
     //selectori

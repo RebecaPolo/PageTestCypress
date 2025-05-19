@@ -1,6 +1,6 @@
 // cypress/pages/DashboardPage.js
 
-import messages from "./messages";
+import messages from "./config/messages";
 
 class DashboardPage {
   //selectori

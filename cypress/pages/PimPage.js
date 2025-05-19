@@ -1,7 +1,7 @@
 // cypress/pages/PimPage.js
 
-import messages from "./messages";
-import routes from "./routes";
+import messages from "./config/messages";
+import routes from "./config/routes";
 
 class PimPage {
     //selectori

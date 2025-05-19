@@ -9,7 +9,8 @@ const messages = {
     welcomeMessage: 'Welcome',
     invalidCredentials: 'Invalid credentials',
     shortPassword: 'Should have at least 7 characters',
-
+    cannotBeDeleted: 'Cannot be deleted',
+    
     //Pages
     dashboardPage: 'Dashboard',
     time: 'Time',

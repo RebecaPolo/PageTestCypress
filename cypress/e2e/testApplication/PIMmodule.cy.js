@@ -1,6 +1,6 @@
-import messages from '../../pages/messages';
+import messages from '../../pages/config/messages';
 import PimPage from '../../pages/PimPage';
-import routes from '../../pages/routes';
+import routes from '../../pages/config/routes';
 
 describe('Testing PIM module components', () => {
   const admin = Cypress.env('admin');
@@ -66,17 +66,8 @@ describe('Testing PIM module components', () => {
     pim.elements.firstNameError().should('contain.text', messages.required);
   });
 
-  it('TC5 - Normal user cannot access add employee page', () => {
-    shouldRunAfterEach = false;
 
-    cy.logout();
-    cy.login(user.username, user.password);
-
-    cy.visit(routes.pimAddEmployee, { failOnStatusCode: false });
-    pim.elements.credentialError().should('be.visible');
-  });
-
-  it('TC6 - Validation for duplicate Employee ID', () => {
+  it('TC5 - Validation for duplicate Employee ID', () => {
     pim.fillEmployeeForm({
       ...employeeData.validEmployee,
       employeeId: employeeData.existingId
@@ -85,9 +76,21 @@ describe('Testing PIM module components', () => {
     pim.elements.duplicateIdError().should('be.visible');
   });
 
-  it('TC7 - Edit an employee from the list', () => {
+  it('TC6 - Edit an employee from the list', () => {
     pim.openEmployeeList();
     pim.editFirstEmployee(employeeData.editName);
     pim.elements.successMessage().should('be.visible');
   });
+
+  it('TC7 - Normal user cannot access add employee page', () => {
+    
+    cy.logout();
+    cy.login(user.username, user.password);
+
+    cy.visit(routes.pimAddEmployee, { failOnStatusCode: false });
+    pim.elements.credentialError().should('be.visible');
+  
+  });
+
+
 });

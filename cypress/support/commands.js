@@ -24,8 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import messages from "../pages/messages"
-import routes from "../pages/routes"
+import messages from "../pages/config/messages";
+import routes from "../pages/config/routes";
 
 Cypress.Commands.add('login', (username, password) => {
   cy.visit(routes.login);
