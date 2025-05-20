@@ -4,7 +4,6 @@ import LogoutPage from '../../pages/LogoutPage'
 
 describe('Logout Functionality Tests ', () => {
 
-  //declarations
   const admin = Cypress.env('admin')
   const user = Cypress.env('user')
   const logoutPage = new LogoutPage()
@@ -23,12 +22,5 @@ describe('Logout Functionality Tests ', () => {
     logoutPage.elements.submitButton().should('be.visible')
   });
 
-  // it('TC3 - Users can go back securly after logout',()=>{
-  //   cy.login(admin.username, admin.password)
-  //   logoutPage.openProfileDropdown()
-  //   logoutPage.clickLogout()
-  //   cy.secureBack()
-  //   cy.url().should('include', 'auth/login')
-  // })
 
 });

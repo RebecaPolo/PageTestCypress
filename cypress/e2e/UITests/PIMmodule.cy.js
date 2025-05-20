@@ -11,7 +11,6 @@ describe('Testing PIM module components', () => {
   let shouldRunAfterEach = true;
 
   before(() => {
-    //fixture
     cy.fixture('employeeData').then((data) => {
       employeeData = data;
     });
@@ -26,14 +25,14 @@ describe('Testing PIM module components', () => {
     if (shouldRunAfterEach) {
       cy.logout();
     } else {
-      shouldRunAfterEach = true; // resetăm pentru următorul test
+      shouldRunAfterEach = true; 
     }
   });
 
   it('TC1 - Add button works correctly', () => {
     pim.openEmployeeList();
     pim.clickAddButton();
-    cy.url().should('include', routes.pimAddEmployee); // validare simplă
+    cy.url().should('include', routes.pimAddEmployee);
   });
 
   it('TC2 - Add an employee with all fields filled correctly', () => {

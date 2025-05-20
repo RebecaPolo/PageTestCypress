@@ -1,210 +1,129 @@
 import messages from "./config/messages";
-const TIMEOUTTIME = 5000
+const TIMEOUT = 5000;
 
 class AdminPage {
   elements = {
-    /* Elements from Admin page */
-    editAdminButton: () =>
-      cy.get('div[role="row"]').filter((index, row) => {
-        const cells = Cypress.$(row).find('div[role="cell"]');
-        const username = Cypress.$(cells[1]).text().trim(); // Username-ul e în a doua coloană
-        return username === 'Admin';
-      }).first().find('i.bi-pencil-fill').parents('button'),
+    getRowByUsername: (username) =>
+      cy.get('div[role="row"]').contains(username).parents('div[role="row"]'),
 
-    editUserButton: () =>
-      cy.get('div[role="row"]').filter((index, row) => {
-        const username = Cypress.$(row).find('div[role="cell"]').eq(1).text().trim();
-        return username !== 'Admin' && username !== '';
-      }).first()
-        .find('button .bi-pencil-fill'),
+    editButtonForUser: (username) =>
+      this.elements.getRowByUsername(username).find('i.bi-pencil-fill').parents('button'),
 
-    //delete
-    deleteButtonForUser: (username) => 
-      cy.get('div[role="row"]').filter((index, row) => {
-        const cells = Cypress.$(row).find('div[role="cell"]');
-        const name = Cypress.$(cells[1]).text().trim();
-        return name === username;
-      }).first().find('i.bi-trash').parents('button'),
+    deleteButtonForUser: (username) =>
+      this.elements.getRowByUsername(username).find('i.bi-trash').parents('button'),
 
-    deleteAdminButton: () =>
-      cy.get('div[role="row"]').filter((index, row) => {
-        const cells = Cypress.$(row).find('div[role="cell"]');
-        const username = Cypress.$(cells[1]).text().trim();
-        return username === 'Admin';
-      }).first().find('i.bi-trash').parents('button'),
-
-    deleteUserButton: () =>
-      cy.get('div[role="row"]').filter((index, row) => {
-        const cells = Cypress.$(row).find('div[role="cell"]');
-        const username = Cypress.$(cells[1]).text().trim();
-        return username === 'ESS'; // sau orice altă valoare are userul normal
-      }).first().find('i.bi-trash').parents('button'),
-    
     cancelButton: () => cy.get('button.oxd-button--ghost').contains('Cancel'),
     userRoleOptions: () => cy.get('.oxd-select-dropdown'),
-    addUserNameSelector: () => cy.get('[role="listbox"]', { timeout: TIMEOUTTIME }),
+    addUserNameSelector: () => cy.get('[role="listbox"]', { timeout: TIMEOUT }),
 
-    /* Elements from Add User */
-    // Dropdown-uri (select-uri)
     addUserRoleDropdown: () =>
-      cy.contains('label', 'User Role')
-        .closest('.oxd-input-group')
-        .find('.oxd-select-wrapper .oxd-select-text'),
+      cy.contains('label', 'User Role').closest('.oxd-input-group').find('.oxd-select-wrapper .oxd-select-text'),
 
     addUserStatusDropdown: () =>
-      cy.contains('label', 'Status')
-        .closest('.oxd-input-group')
-        .find('.oxd-select-wrapper .oxd-select-text'),
+      cy.contains('label', 'Status').closest('.oxd-input-group').find('.oxd-select-wrapper .oxd-select-text'),
 
-    // Input text + autocomplete
     addUserName: () => cy.get('.oxd-autocomplete-text-input--active input[placeholder="Type for hints..."]'),
+    addUserUsername: () => cy.contains('label', 'Username').closest('.oxd-input-group').find('input'),
+    addUserPassword: () => cy.contains('label', 'Password').closest('.oxd-input-group').find('input[type="password"]'),
+    addUserConfirmPass: () => cy.contains('label', 'Confirm Password').closest('.oxd-input-group').find('input[type="password"]'),
 
-    // Inputuri simple
-    addUserUsername: () =>
-      cy.contains('label', 'Username')
-        .closest('.oxd-input-group')
-        .find('input.oxd-input.oxd-input--active'),
-
-    addUserPassword: () =>
-      cy.contains('label', 'Password')
-        .closest('.oxd-input-group')
-        .find('input[type="password"].oxd-input.oxd-input--active'),
-
-    addUserConfirmPass: () =>
-      cy.contains('label', 'Confirm Password')
-        .closest('.oxd-input-group')
-        .find('input[type="password"]'),
-
-    // Butoane
     addUserCancelButton: () => cy.get('button.oxd-button--ghost').contains('Cancel'),
     addUserSaveButton: () => cy.get('button.oxd-button--secondary').contains('Save'),
 
-    // Mesaje
     successfulySavedMessage: () => cy.contains(messages.succesfullySaved),
     requiredErrors: () => cy.get('.oxd-input-group__message'),
-    passwordDoNotMatchError: () =>
-      cy.contains('.oxd-input-group__message', messages.passwordMismatch),
+    passwordDoNotMatchError: () => cy.contains('.oxd-input-group__message', messages.passwordMismatch),
   };
 
-  fillAddUserForm({ role, name, status, username, password,confirmPassword }) {
-    this.selectAddUserRole(role);
-    this.editAddUserName(name);
-    this.selectAddUserStatus(status);
-    this.editAddUserUsername(username);
-    this.editAddUserPassword(password);
-    this.editAddUserConfirmPass(confirmPassword);
+  /* ---------- Generic Actions ---------- */
+  clickEditButton(username) {
+    this.elements.editButtonForUser(username).click();
   }
 
-  //Edit button
-  clickEditAdminButton() {
-    this.elements.editAdminButton().click();
-  }
-  clickEditUserButton() {
-    this.elements.editUserButton().click();
+  clickDeleteButton(username) {
+    this.elements.deleteButtonForUser(username).click();
   }
 
-  //DeleteButton
-  clickDeleteAdminButton() {
-    this.elements.deleteAdminButton().click();
-  }
-  clickDeleteUserButton() {
-    this.elements.deleteUserButton().click();
-  }
-
-  clickConfirmDeleteButton() {
+  confirmDelete() {
     cy.get('button').contains('Yes, Delete').click();
   }
 
-  deleteUser(){
-    this.clickDeleteUserButton()
-    this.clickConfirmDeleteButton()
-  }
-  cancelDeleteUser(){
-    this.clickDeleteUserButton()
-    this.clickCancelDeleteButton()
-  }
-  deleteAdmin(){
-    this.clickDeleteAdminButton()
-    this.getCannotDeleteMessage()
-  }
-  deleteThisUser(username){
-    this.elements.deleteButtonForUser(username).click();
-    this.clickConfirmDeleteButton();
+  cancelDelete() {
+    cy.get('button').contains('No, Cancel').click();
   }
 
-  clickCancelDeleteButton() {
-    cy.get('button').contains('No, Cancel').click();
+  deleteUser(username) {
+    this.clickDeleteButton(username);
+    this.confirmDelete();
+  }
+
+  deleteAdmin() {
+    this.deleteUser('Admin');
+    this.getCannotDeleteMessage();
   }
 
   getCannotDeleteMessage() {
     return cy.contains(messages.cannotBeDeleted);
   }
 
-
-  clickCancelButton(){
-    this.elements.cancelButton().click();
+  /* ---------- Form Actions ---------- */
+  fillAddUserForm({ role, name, status, username, password, confirmPassword }) {
+    this.selectDropdown('addUserRoleDropdown', role);
+    this.selectAutocompleteName(name);
+    this.selectDropdown('addUserStatusDropdown', status);
+    if (username) this.elements.addUserUsername().clear().type(username);
+    if (password) this.elements.addUserPassword().clear().type(password);
+    if (confirmPassword) this.elements.addUserConfirmPass().clear().type(confirmPassword);
   }
 
-  selectAddUserRole(role) {
-    this.elements.addUserRoleDropdown().click();
-    this.elements.userRoleOptions().contains(role).click();
+  selectDropdown(dropdownKey, value) {
+    this.elements[dropdownKey]().click();
+    this.elements.userRoleOptions().contains(value).click();
   }
 
-  editAddUserName(name) {
+  selectAutocompleteName(name) {
     this.elements.addUserName().clear().type(name);
-    cy.wait(2000);
-    this.elements.addUserNameSelector()
-      .find('[role="option"]')
-      .contains(name)
-      .first()
-      .click();
+    cy.wait(2000); 
+    this.elements.addUserNameSelector().find('[role="option"]').contains(name).click();
   }
 
-  selectAddUserStatus(status) {
-    this.elements.addUserStatusDropdown().click();
-    this.elements.userRoleOptions().contains(status).click();
-  }
-
-  editAddUserUsername(username) {
-    if (username) {
-      this.elements.addUserUsername().clear().type(username);
-    }
-  }
-
-  editAddUserPassword(password) {
-    if (password) {
-      this.elements.addUserPassword().clear().type(password);
-    }
-  }
-
-  editAddUserConfirmPass(password) {
-    if (password) {
-      this.elements.addUserConfirmPass().clear().type(password);
-    }
-  }
-
-  clickAddUserCancelButton() {
-    this.elements.addUserCancelButton().click();
-  }
-
-  clickAddUserSaveButton() {
+  saveForm() {
     this.elements.addUserSaveButton().click();
   }
 
+  cancelForm() {
+    this.elements.addUserCancelButton().click();
+  }
+    clickFirstEditableUser() {
+    cy.get('div[role="row"]').eq(1).find('i.bi-pencil-fill').parents('button').click();
+  }
+
+  clickEditButtonByUsername(username) {
+    this.elements.editButtonForUser(username).click();
+  }
+
+  clickDeleteButtonByUsername(username) {
+    this.elements.deleteButtonForUser(username).click();
+  }
+
+  clickConfirmDeleteButton() {
+    cy.get('button').contains('Yes, Delete').click();
+  }
+
+  clickCancelButton() {
+    this.elements.cancelButton().click();
+  }
+
+
+  /* ---------- Validations ---------- */
   expectSuccessfulySavedMessage() {
     this.elements.successfulySavedMessage().should('be.visible');
   }
 
-  verifyRequiredErrors() {
-    // verificăm că sunt cel puțin 5 erori de tip required
-    const requiredFieldsCount = 5;
-    this.elements.requiredErrors().should('have.length.at.least', requiredFieldsCount);
-
-    // verificăm primele 5 erori să conțină textul de required
+  verifyRequiredErrors(count = 5) {
+    this.elements.requiredErrors().should('have.length.at.least', count);
     this.elements.requiredErrors().each(($el, index) => {
-      if (index < requiredFieldsCount) {
-        cy.wrap($el).should('contain.text', messages.required);
-      }
+      if (index < count) cy.wrap($el).should('contain.text', messages.required);
     });
   }
 
@@ -212,29 +131,8 @@ class AdminPage {
     this.elements.passwordDoNotMatchError().should('be.visible');
   }
 
-  verifyAllErrors() {
-    this.verifyRequiredErrors();
-    this.verifyPasswordMismatchError();
-  }
-
-  verifyUsernameRequiredError() {
-    cy.wait(2000);
-    this.elements.requiredErrors()
-      .should('exist')
-      .should('contain.text', messages.required);
-  }
-
-  verifyPasswordRequiredError() {
-    this.elements.requiredErrors()
-      .should('exist')
-      .should('contain.text', messages.required);
-  }
-
   verifyShortPasswordError() {
-    this.elements.requiredErrors()
-      .should('exist')
-      .should('contain.text', messages.shortPassword);
+    this.elements.requiredErrors().should('contain.text', messages.shortPassword);
   }
 }
-
 export default AdminPage;

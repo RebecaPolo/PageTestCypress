@@ -1,10 +1,8 @@
-// cypress/pages/PimPage.js
 
 import messages from "./config/messages";
 import routes from "./config/routes";
 
 class PimPage {
-    //selectori
   elements = {
     firstName: () => cy.get('input[name="firstName"]'),
     middleName: () => cy.get('input[name="middleName"]'),
@@ -28,13 +26,11 @@ class PimPage {
     editFirstNameInput: () => cy.get('input[name="firstName"]'),
     editSubmitButton: () => cy.get('button[type="submit"]').eq(1),
 
-    //messages
     successMessage: () => cy.contains(messages.succesfullySaved),
     credentialError: () => cy.contains(messages.credentialRequired),
     duplicateIdError: () => cy.contains(messages.duplicateIdError),
   };
 
-  //metode
   fillEmployeeForm({ firstName, middleName, lastName, employeeId }) {
     if (firstName) this.elements.firstName().type(firstName);
     if (middleName) this.elements.middleName().type(middleName);

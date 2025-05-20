@@ -1,6 +1,5 @@
-
+// Mesaje statice utilizate în aplicație pentru validări și UI
 const messages = {
-    //messages
     required: 'Required',
     passwordMismatch: 'Passwords do not match',
     succesfullySaved: 'Successfully Saved',
@@ -11,17 +10,13 @@ const messages = {
     shortPassword: 'Should have at least 7 characters',
     cannotBeDeleted: 'Cannot be deleted',
     
-    //Pages
     dashboardPage: 'Dashboard',
     time: 'Time',
     leave: 'Leave',
     directory: 'Directory',
     pim: 'PIM',
 
-
-    //elements
     logout: 'Logout',
     employeeId: 'Employee Id',
-
 }
 export default messages;

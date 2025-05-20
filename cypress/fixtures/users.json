@@ -1,0 +1,27 @@
+{
+  "admin": {
+    "username": "admin",
+    "password": "admin123",
+    "menu": {
+      "visible": ["PIM", "Leave", "Time", "Directory"],
+      "keyLink": {
+        "label": "PIM",
+        "index": 1,
+        "route": "/pim/viewEmployeeList"
+      }
+    }
+  },
+  "user": {
+    "username": "rebecapolo",
+    "password": "rebeca123",
+    "menu": {
+      "visible": ["Leave", "Time", "Directory"],
+      "notVisible": ["PIM"],
+      "keyLink": {
+        "label": "Leave",
+        "index": 0,
+        "route": "/leave/viewMyLeaveList"
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import messages from "./config/messages";
 
 class LogoutPage {
-    //selectori
   elements = {
     usernameInput: () => cy.get('input[name="username"]'),
     passwordInput: () => cy.get('input[name="password"]'),
@@ -10,7 +9,6 @@ class LogoutPage {
     logoutButton: () => cy.contains(messages.logout),
   }
 
-  //metode
   typeUsername(username) {
     this.elements.usernameInput().type(username);
   }

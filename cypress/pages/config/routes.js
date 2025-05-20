@@ -1,5 +1,4 @@
 
-//endpoints
 const routes = {
     //all users
     login: '/auth/login',
@@ -13,7 +12,6 @@ const routes = {
     userPerformance: '/performance/myPerformanceReview',
     userClaimView: '/claim/viewClaim',
     userClaimSubmit: '/claim/submitClaim',
-
 
     //admin
     adminViewUsers: '/admin/viewSystemUsers',

@@ -1,4 +1,3 @@
-// cypress/e2e/testApplication/login.cy.js
 import LoginPage from '../../pages/LoginPage'
 import messages from '../../pages/config/messages';
 import routes from '../../pages/config/routes';

@@ -1,16 +1,13 @@
-// cypress/pages/DashboardPage.js
 
 import messages from "./config/messages";
 
 class DashboardPage {
-  //selectori
   elements = {
     menuItem: (index) => cy.get('.oxd-main-menu-item-wrapper').eq(index),
     menuLabel: (label) => cy.contains(label),
     welcomeMessage: () => cy.contains(messages.welcomeMessage)
   }
 
-  //metode
   goToMenuItem(label, index) {
     this.elements.menuLabel(label).should('be.visible');
     this.elements.menuItem(index).click();

@@ -8,8 +8,7 @@ describe('PIM API Tests', () => {
     cy.login(admin.username, admin.password);
   });
 
-  afterEach(() => {
-    // Cleanup: șterge angajații creați
+  afterEach(() => { 
     createdEmpNumbers.forEach((empNumber) => {
       cy.request({
         method: 'DELETE',

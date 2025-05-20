@@ -1,10 +1,8 @@
-// cypress/pages/LoginPage.js
 
 import messages from "./config/messages";
 import routes from "./config/routes";
 
 class LoginPage {
-    //selectori
   elements = {
     usernameInput: () => cy.get('input[name="username"]'),
     passwordInput: () => cy.get('input[name="password"]'),
@@ -14,7 +12,6 @@ class LoginPage {
     invalidCredentials: () => cy.contains(messages.invalidCredentials)
   }
 
-  //metode
   visit() {
     cy.visit(routes.login);
   }

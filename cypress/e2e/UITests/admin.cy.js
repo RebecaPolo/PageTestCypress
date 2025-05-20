@@ -68,6 +68,14 @@ describe('Admin page testing', () => {
       adminPage.clickAddUserSaveButton();
       cy.contains('Already exists').should('be.visible');
     });
+
+     it('TC8 - Should cancel user deletion when clicking "No, Cancel"', () => {
+      adminPage.clickDeleteButtonByUsername('ESS');
+      adminPage.clickCancelDeleteButton();
+
+      cy.get('.oxd-dialog-container').should('not.exist');
+      cy.get('div[role="row"]').should('contain.text', 'ESS');
+    });
   });
 
 });
