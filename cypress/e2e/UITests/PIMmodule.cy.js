@@ -2,6 +2,9 @@ import messages from '../../pages/config/messages';
 import PimPage from '../../pages/PimPage';
 import routes from '../../pages/config/routes';
 
+
+
+
 describe('Testing PIM module components', () => {
   const admin = Cypress.env('admin');
   const user = Cypress.env('user');
@@ -16,6 +19,20 @@ describe('Testing PIM module components', () => {
     });
   });
 
+  function createEmployeeAndSubmit(employeeOverride = {}) {
+  const id = Math.floor(1000 + Math.random() * 9000); 
+  const employee = {
+    ...employeeData.validEmployee,     
+    employeeId: id,                   
+    ...employeeOverride                
+  };
+
+  pim.fillEmployeeForm(employee);
+  pim.submitForm();
+
+  return employee; 
+}
+
   beforeEach(() => {
     cy.login(admin.username, admin.password);
     pim.openAddEmployee();
@@ -29,49 +46,42 @@ describe('Testing PIM module components', () => {
     }
   });
 
-  it('TC1 - Add button works correctly', () => {
+  it('TC1 - Add button redirects to Add employee page after click', () => {
     pim.openEmployeeList();
     pim.clickAddButton();
     cy.url().should('include', routes.pimAddEmployee);
   });
 
   it('TC2 - Add an employee with all fields filled correctly', () => {
-    const id = Math.floor(1000 + Math.random() * 9000);
-    pim.fillEmployeeForm({
-      ...employeeData.validEmployee,
-      employeeId: id
-    });
-    pim.submitForm();
+    const employee = createEmployeeAndSubmit(); // folosește validEmployee
     pim.elements.successMessage().should('be.visible');
+
+    pim.openEmployeeList();
+    pim.verifyEmployeeInListById(employee.employeeId);
   });
 
   it('TC3 - Validation for Last Name when adding a new user', () => {
-    const id = Math.floor(1000 + Math.random() * 9000);
-    pim.fillEmployeeForm({
-      ...employeeData.missingLastName,
-      employeeId: id
+    createEmployeeAndSubmit({
+      ...employeeData.missingLastName
     });
-    pim.submitForm();
+
     pim.elements.lastNameError().should('contain.text', messages.required);
   });
 
   it('TC4 - Validation for First Name when adding a new user', () => {
-    const id = Math.floor(1000 + Math.random() * 9000);
-    pim.fillEmployeeForm({
-      ...employeeData.missingFirstName,
-      employeeId: id
+    createEmployeeAndSubmit({
+      ...employeeData.missingFirstName
     });
-    pim.submitForm();
+
     pim.elements.firstNameError().should('contain.text', messages.required);
   });
 
-
   it('TC5 - Validation for duplicate Employee ID', () => {
-    pim.fillEmployeeForm({
+    createEmployeeAndSubmit({
       ...employeeData.validEmployee,
       employeeId: employeeData.existingId
     });
-    pim.submitForm();
+
     pim.elements.duplicateIdError().should('be.visible');
   });
 

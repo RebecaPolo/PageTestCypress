@@ -25,6 +25,15 @@ class PimPage {
     editButton: () => cy.get('button[class="oxd-icon-button oxd-table-cell-action-space"]').eq(0),
     editFirstNameInput: () => cy.get('input[name="firstName"]'),
     editSubmitButton: () => cy.get('button[type="submit"]').eq(1),
+    employeeIdCells: () => cy.get('.oxd-table-card-cell .header')
+        .contains('Id')
+        .parents('.oxd-table-card-cell')
+        .siblings('.oxd-table-card-cell')
+        .find('.data'),
+    nextPageButton: () =>
+      cy.get('ul.oxd-pagination__ul')
+        .find('i.bi-chevron-right') 
+        .parents('button') ,
 
     successMessage: () => cy.contains(messages.succesfullySaved),
     credentialError: () => cy.contains(messages.credentialRequired),
@@ -36,6 +45,33 @@ class PimPage {
     if (middleName) this.elements.middleName().type(middleName);
     if (lastName) this.elements.lastName().type(lastName);
     if (employeeId) this.elements.employeeIdInput().clear().type(employeeId.toString());
+  }
+  
+  verifyEmployeeInListById(employeeId) {
+    const searchInPage = () => {
+      cy.get('.oxd-table-card').then(($cards) => {
+        const found = Cypress._.some($cards, (card) => {
+          return card.innerText.includes(employeeId.toString());
+        });
+
+        if (found) {
+          cy.log(`✅ Employee ID ${employeeId} found.`);
+          return;
+        }
+
+        this.elements.nextPageButton().then(($btn) => {
+          if ($btn.is(':disabled')) {
+            throw new Error(`❌ Employee ID ${employeeId} not found in any page`);
+          } else {
+            cy.wrap($btn).click();
+            cy.wait(300);
+            searchInPage();
+          }
+        });
+      });
+    };
+
+    searchInPage();
   }
 
   submitForm() {

@@ -8,10 +8,12 @@
     "lastName": "Polo"
   },
   "missingLastName": {
+    "lastName": "",
     "firstName": "Rebeca",
     "middleName": "Test1"
   },
   "missingFirstName": {
+    "firstName": "",
     "middleName": "Test1",
     "lastName": "Test"
   },
